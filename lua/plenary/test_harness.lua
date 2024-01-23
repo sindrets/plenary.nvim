@@ -49,9 +49,13 @@ local function test_paths(paths, opts)
     sequential = false,
     keep_going = true,
     timeout = 50000,
+    update_snapshots = false,
   }, opts or {})
 
   vim.env.PLENARY_TEST_TIMEOUT = opts.timeout
+  vim.env.PLENARY_UPDATE_SNAPSHOTS = vim.env.PLENARY_UPDATE_SNAPSHOTS
+      or (opts.update_snapshots and 1)
+      or nil
 
   local res = {}
   if not headless then
