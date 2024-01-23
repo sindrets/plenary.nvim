@@ -330,11 +330,28 @@ local function write_snapshot()
   return { updated = n_updated, removed = n_removed }
 end
 
+--- @param state table
+--- @param arguments table
+--- @return boolean
 local function match_snapshot(state, arguments)
   local s_actual = inspect(arguments[1])
   arguments[1] = s_actual
 
   if update_snapshots then
+    local t1 = type(arguments[1])
+
+    -- Assert that the value is something we can "serialize"
+    assert(
+      vim.tbl_contains({
+        "nil",
+        "number",
+        "string",
+        "boolean",
+        "table",
+      }, t1),
+      string.format("Cannot create snapshot for value of type '%s'!", t1)
+    )
+
     pending_snapshots[#pending_snapshots+1] = {
       key = next_snapshot_key(),
       value = s_actual,
